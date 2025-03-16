@@ -17,13 +17,8 @@ import { StyledTextField } from '@/styles/commonStyle'
 import SearchIcon from '@mui/icons-material/Search'
 import { Box, CircularProgress } from '@mui/material'
 import debounce from 'debounce'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import * as React from 'react'
-const InfiniteScroll = dynamic(
-  () => import('react-infinite-scroll-component'),
-  { ssr: false }
-)
 export interface IHomeProps {}
 
 export default function Home(props: IHomeProps) {
