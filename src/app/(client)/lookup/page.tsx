@@ -1,24 +1,25 @@
 'use client'
-import { getListPublications } from '@/apiRequest/publicationApi'
-import { PublicationTypeResponse } from '@/lib/types/PublicationType'
-import { convertSlugify, handleErrorCode } from '@/lib/utils/common'
-import * as React from 'react'
-import { Box, CircularProgress } from '@mui/material'
-import dynamic from 'next/dynamic'
-import { StyledTextField } from '@/styles/commonStyle'
-import debounce from 'debounce'
-import SearchIcon from '@mui/icons-material/Search'
 import { getListAuthors } from '@/apiRequest/authorApi'
-import { AuthorType } from '@/lib/types/AuthorType'
-import { getListPublishers } from '@/apiRequest/publisherApi'
-import { PublisherType } from '@/lib/types/publisherType'
-import { getListWarehouses } from '@/apiRequest/warehouseApi'
 import { getListLanguages } from '@/apiRequest/languageApi'
-import { WarehouseType } from '@/lib/types/warehouseType'
-import { LanguageType } from '@/lib/types/languageType'
+import { getListPublications } from '@/apiRequest/publicationApi'
+import { getListPublishers } from '@/apiRequest/publisherApi'
+import { getListWarehouses } from '@/apiRequest/warehouseApi'
 import AutoCompleteCustom from '@/components/AutocompleteCustom'
-import { useRouter } from 'next/navigation'
+import PaginationCustom from '@/components/PaginationCustom'
+import { AuthorType } from '@/lib/types/AuthorType'
 import { pageInfo } from '@/lib/types/commonType'
+import { LanguageType } from '@/lib/types/languageType'
+import { PublicationTypeResponse } from '@/lib/types/PublicationType'
+import { PublisherType } from '@/lib/types/publisherType'
+import { WarehouseType } from '@/lib/types/warehouseType'
+import { convertSlugify, handleErrorCode } from '@/lib/utils/common'
+import { StyledTextField } from '@/styles/commonStyle'
+import SearchIcon from '@mui/icons-material/Search'
+import { Box, CircularProgress } from '@mui/material'
+import debounce from 'debounce'
+import dynamic from 'next/dynamic'
+import { useRouter } from 'next/navigation'
+import * as React from 'react'
 const InfiniteScroll = dynamic(
   () => import('react-infinite-scroll-component'),
   { ssr: false }
@@ -31,12 +32,11 @@ export default function Home(props: IHomeProps) {
   >([])
   const [pageInfo, setPageInfo] = React.useState<pageInfo>({
     page: 1,
-    itemPerPage: 10,
+    itemPerPage: 4,
     totalItem: 0,
     totalPage: 0,
   })
-  const [loading, setLoading] = React.useState<boolean>(true)
-  const [hasMore, setHasMore] = React.useState<boolean>(true)
+  const [loading, setLoading] = React.useState<boolean>(false)
   const [authors, setAuthors] = React.useState<AuthorType[]>([])
   const [publishers, setPublishers] = React.useState<PublisherType[]>([])
   const [warehouses, setWarehouses] = React.useState<WarehouseType[]>([])
@@ -52,10 +52,10 @@ export default function Home(props: IHomeProps) {
   const fetchListPublications = async (
     page: number,
     size: number,
-    filter: string,
-    isFilter: boolean = false
+    filter: string
   ) => {
     try {
+      setLoading(true)
       const res = await getListPublications(page, size, filter)
       setPageInfo({
         page: res.data.meta.page,
@@ -63,14 +63,7 @@ export default function Home(props: IHomeProps) {
         totalItem: res.data.meta.total,
         totalPage: res.data.meta.pages,
       })
-      if (isFilter) {
-        setListPublications(res.data.result)
-      } else {
-        setListPublications((prev) => [...prev, ...res.data.result])
-      }
-      if (res.data.result.length < size) {
-        setHasMore(false)
-      }
+      setListPublications(res.data.result)
     } catch (error: any) {
       handleErrorCode(error)
     } finally {
@@ -79,10 +72,9 @@ export default function Home(props: IHomeProps) {
   }
   React.useEffect(() => {
     fetchListPublications(
-      pageInfo.page,
+      1,
       pageInfo.itemPerPage,
-      buildSearchFilter(namePublication),
-      true
+      buildSearchFilter(namePublication)
     )
   }, [filter])
   React.useEffect(() => {
@@ -118,6 +110,17 @@ export default function Home(props: IHomeProps) {
       handleErrorCode(error)
     }
   }
+  const getPaginatedTableRows = async (selected: number) => {
+    try {
+      await fetchListPublications(
+        selected,
+        pageInfo.itemPerPage,
+        buildSearchFilter(namePublication)
+      )
+    } catch (error: any) {
+      handleErrorCode(error)
+    }
+  }
 
   const fetchListLanguages = async () => {
     try {
@@ -128,6 +131,9 @@ export default function Home(props: IHomeProps) {
       handleErrorCode(error)
     }
   }
+  const handleChangePerPage = async (perPage: number) => {
+    await fetchListPublications(1, perPage, buildSearchFilter(namePublication))
+  }
   const handleView = () => {
     if (loading) {
       return (
@@ -136,77 +142,59 @@ export default function Home(props: IHomeProps) {
         </Box>
       )
     }
+    if (listPublications.length === 0) {
+      return (
+        <div className='h-[400px] flex justify-center items-center'>
+          Không có kết quả tìm kiếm
+        </div>
+      )
+    }
     return (
-      typeof window !== 'undefined' && (
-        <div>
-          {listPublications.length === 0 ? (
-            <Box className='flex justify-center items-center h-80'>
-              <p>Không có dữ liệu</p>
-            </Box>
-          ) : (
-            <InfiniteScroll
-              dataLength={listPublications.length}
-              hasMore={hasMore}
-              loader={<h4>Loading...</h4>}
-              next={() => {
-                let page = pageInfo.page + 1
-                fetchListPublications(
-                  page,
-                  pageInfo.itemPerPage,
-                  buildSearchFilter(namePublication)
+      <div>
+        <div className='grid grid-cols-4 gap-4'>
+          {listPublications.map((item, index) => (
+            <div
+              key={index}
+              className='w-[250px] cursor-pointer shadow-sm p-3 transition-transform duration-300 ease-in-out transform hover:-translate-y-2 hover:shadow-md'
+              onClick={() => {
+                router.push(
+                  `/publication/${convertSlugify(item.name)}-${item.id}.html`
                 )
               }}
             >
-              <div className='grid grid-cols-5 gap-4'>
-                {listPublications.map((item, index) => (
-                  <div
-                    key={index}
-                    className='w-[250px] cursor-pointer shadow-sm p-3 transition-transform duration-300 ease-in-out transform hover:-translate-y-2 hover:shadow-md'
-                    onClick={() => {
-                      router.push(
-                        `/publication/${convertSlugify(item.name)}-${item.id}.html`
-                      )
-                    }}
-                  >
-                    <img
-                      src={item.bannerImg}
-                      alt={item.name}
-                      className='w-[175px] h-[170px] object-contain'
-                    />
-                    <h4 className='text-center font-semibold mt-3'>
-                      {item.name}
-                    </h4>
-                    <h4>
-                      Tác giả:{' '}
-                      {item.authors
-                        .map((author, index) => author.fullName)
-                        .join(', ')}
-                    </h4>
-                    <h4>
-                      Nhà xuất bản:{' '}
-                      {item.publisher?.name !== null
-                        ? item.publisher?.name
-                        : ''}
-                    </h4>
-                    <h4>Ngôn ngữ: {item.language.name}</h4>
-                    <h4>Kho: {item.warehouse.name}</h4>
-                  </div>
-                ))}
-              </div>
-            </InfiniteScroll>
-          )}
+              <img
+                src={item.bannerImg}
+                alt={item.name}
+                className='w-[175px] h-[170px] object-contain'
+              />
+              <h4 className='text-center font-semibold mt-3'>{item.name}</h4>
+              <h4>
+                Tác giả:{' '}
+                {item.authors
+                  .map((author, index) => author.fullName)
+                  .join(', ')}
+              </h4>
+              <h4>
+                Nhà xuất bản:{' '}
+                {item.publisher?.name !== null ? item.publisher?.name : ''}
+              </h4>
+              <h4>Ngôn ngữ: {item.language.name}</h4>
+              <h4>Kho: {item.warehouse.name}</h4>
+            </div>
+          ))}
         </div>
-      )
+        <PaginationCustom
+          pageInfo={pageInfo}
+          getPaginatedTableRows={getPaginatedTableRows}
+          onChangePerPage={handleChangePerPage}
+          lengthItem={listPublications.length}
+        />
+      </div>
     )
   }
   const handleSearchPublication = React.useCallback(
     debounce((name: string) => {
-      fetchListPublications(
-        1,
-        pageInfo.itemPerPage,
-        buildSearchFilter(name),
-        true
-      )
+      fetchListPublications(1, pageInfo.itemPerPage, buildSearchFilter(name))
     }, 500),
     [filter]
   )
