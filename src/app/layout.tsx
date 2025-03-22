@@ -6,6 +6,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import './globals.css'
 import { AntdRegistry } from '@ant-design/nextjs-registry'
 import Account from './(client)/_components/Account'
+import NotificationPopup from '@/components/NotificationPopup'
+import { WebSocketProvider } from '@/components/WebSocketProvider'
 export default async function Layout({
   children,
 }: Readonly<{
@@ -17,21 +19,12 @@ export default async function Layout({
         <StoreProvider>
           <ThemeRegistry>
             <Account />
-            <AntdRegistry>{children}</AntdRegistry>
+            <WebSocketProvider>
+              <NotificationPopup />
+              <AntdRegistry>{children}</AntdRegistry>
+            </WebSocketProvider>
           </ThemeRegistry>
         </StoreProvider>
-        <ToastContainer
-          position='top-right'
-          autoClose={4000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme='light'
-        />
       </body>
     </html>
   )

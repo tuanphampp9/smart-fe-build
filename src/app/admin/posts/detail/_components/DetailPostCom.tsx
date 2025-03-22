@@ -15,6 +15,9 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import { uploadImage } from '@/apiRequest/commonApi'
 import { useRouter, useSearchParams } from 'next/navigation'
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/store/store'
+import { useWebSocket } from '@/components/WebSocketProvider'
 export interface IDetailPostComProps {}
 
 export default function DetailPostCom(props: IDetailPostComProps) {
@@ -29,6 +32,8 @@ export default function DetailPostCom(props: IDetailPostComProps) {
   const [loadingGetPost, setLoadingGetPost] = React.useState(false)
   const router = useRouter()
   const fileInputBannerImageRef = React.useRef<HTMLInputElement>(null)
+  const stompClient: any = useWebSocket()
+  console.log(stompClient)
   const formik = useFormik({
     initialValues: {
       title: '',
@@ -53,6 +58,16 @@ export default function DetailPostCom(props: IDetailPostComProps) {
           router.push('/admin/posts')
         } else {
           const res = await createPost(values)
+          if (stompClient && stompClient?.connected) {
+            stompClient.publish({
+              destination: `/app/send-notification`,
+              body: JSON.stringify({
+                id: res.data.id,
+                title: `Thủ thư vừa đăng tin mới: ${res.data.title}`,
+                type: 'posts',
+              }),
+            })
+          }
           toast.success('Đăng bài thành công')
           formik.resetForm()
           setBannerImg({ url: '', loading: false })

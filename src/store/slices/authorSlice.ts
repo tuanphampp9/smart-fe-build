@@ -1,4 +1,3 @@
-import { CategoryType } from '@/lib/types/categoryType'
 import { pageInfo } from './../../lib/types/commonType'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { AuthorType } from '@/lib/types/AuthorType'

@@ -31,6 +31,9 @@ import AutoCompleteMultipleCustomized from '@/components/AutocompleteMultipleCus
 import AutoCompleteCustom from '@/components/AutocompleteCustom'
 import { LanguageType } from '@/lib/types/languageType'
 import { getListLanguages } from '@/apiRequest/languageApi'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/store/store'
+import { useWebSocket } from '@/components/WebSocketProvider'
 export interface IPublicationDetailComProps {}
 
 export default function PublicationDetailCom(
@@ -57,6 +60,7 @@ export default function PublicationDetailCom(
   const [languages, setLanguages] = React.useState<LanguageType[]>([])
   const [loadingGetPublication, setLoadingGetPublication] =
     React.useState<boolean>(true)
+  const stompClient: any = useWebSocket()
   const formik = useFormik({
     initialValues: {
       name: '',
@@ -115,6 +119,17 @@ export default function PublicationDetailCom(
         } else {
           // call api create reader
           const res = await createPublication(values)
+          // send notification
+          if (stompClient && stompClient?.connected) {
+            stompClient.publish({
+              destination: `/app/send-notification`,
+              body: JSON.stringify({
+                id: res.data.id,
+                title: 'Thủ thư vừa thêm ấn phẩm mới: ' + res.data.name,
+                type: 'publication',
+              }),
+            })
+          }
           toast.success('Thêm mới ấn phẩm thành công')
           formik.resetForm()
           router.push('/admin/publications')
