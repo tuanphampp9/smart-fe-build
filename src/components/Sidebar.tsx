@@ -1,10 +1,12 @@
 'use client'
+import { logout } from '@/apiRequest/authApi'
 import { baseMenu } from '@/lib/types/commonType'
 import { StyledDrawer } from '@/styles/commonStyle'
 import CircleIcon from '@mui/icons-material/Circle'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import {
+  Button,
   Collapse,
   List,
   ListItem,
@@ -17,6 +19,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { toast } from 'react-toastify'
 export interface ISidebarProps {
   menu: baseMenu[]
 }
@@ -55,6 +58,12 @@ const Sidebar = (props: ISidebarProps) => {
     }))
   }
 
+  const handleLogout = async () => {
+    localStorage.removeItem('token')
+    await logout()
+    toast.success('Đăng xuất thành công')
+    router.push('/login')
+  }
   return (
     <StyledDrawer
       variant='permanent'
@@ -157,6 +166,11 @@ const Sidebar = (props: ISidebarProps) => {
           </React.Fragment>
         ))}
       </List>
+      <div className='mt-3 border-t border-gray-500'>
+        <Button onClick={handleLogout} className='!text-white !ml-3'>
+          Đăng xuất
+        </Button>
+      </div>
     </StyledDrawer>
   )
 }

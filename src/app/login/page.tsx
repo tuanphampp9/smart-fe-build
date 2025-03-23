@@ -47,9 +47,9 @@ export default function Login(props: ILoginProps) {
           await setTokenNextServer(res.data.data.access_token)
           toast.success('Đăng nhập thành công')
           if (res.data.data.user.role.name === 'ADMIN') {
-            router.push('/admin')
+            window.location.href = '/admin'
           } else if (res.data.data.user.role.name === 'READER') {
-            router.push('/lookup')
+            window.location.href = '/lookup'
           }
           dispatch(
             setInfoUser({

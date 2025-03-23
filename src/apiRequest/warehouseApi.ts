@@ -55,3 +55,10 @@ export const uploadExcel = async (file: File) => {
   )
   return response
 }
+
+export const getAllWarehousePub = async () => {
+  const response = await instant.get(
+    `${API_DOMAIN}/v1/warehouses/list-publications`
+  )
+  return response
+}

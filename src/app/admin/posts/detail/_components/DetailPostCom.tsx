@@ -33,7 +33,6 @@ export default function DetailPostCom(props: IDetailPostComProps) {
   const router = useRouter()
   const fileInputBannerImageRef = React.useRef<HTMLInputElement>(null)
   const stompClient: any = useWebSocket()
-  console.log(stompClient)
   const formik = useFormik({
     initialValues: {
       title: '',
