@@ -21,7 +21,7 @@ export const WebSocketProvider = ({
     if (!token) return
     // Cấu hình STOMP client
     const stompClient = new Client({
-      brokerURL: 'http://localhost:8080/ws',
+      brokerURL: `${process.env.NEXT_PUBLIC_SOCKET_API_URL}/ws`,
       reconnectDelay: 5000, // Tự động reconnect sau 5s nếu mất kết nối
       connectHeaders: {
         Authorization: `Bearer ${token}`, // Truyền token vào header
