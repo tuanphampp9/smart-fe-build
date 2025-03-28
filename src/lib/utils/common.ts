@@ -49,3 +49,29 @@ export const convertSlugify = (str: string): string => {
   if (!str) return ''
   return slugify(str, { lower: true, locale: 'vi' })
 }
+
+export const handleTimeAgo = (dateString: string): string => {
+  const date = new Date(dateString)
+  const now = dayjs()
+  const target = dayjs(date)
+  const diffInSeconds = now.diff(target, 'second')
+  const diffInMinutes = now.diff(target, 'minute')
+  const diffInHours = now.diff(target, 'hour')
+  const diffInDays = now.diff(target, 'day')
+  const diffInMonths = now.diff(target, 'month')
+  const diffInYears = now.diff(target, 'year')
+
+  if (diffInSeconds < 60) {
+    return `${diffInSeconds} giây trước`
+  } else if (diffInMinutes < 60) {
+    return `${diffInMinutes} phút trước`
+  } else if (diffInHours < 24) {
+    return `${diffInHours} giờ trước`
+  } else if (diffInDays < 30) {
+    return `${diffInDays} ngày trước`
+  } else if (diffInMonths < 12) {
+    return `${diffInMonths} tháng trước`
+  } else {
+    return `${diffInYears} năm trước`
+  }
+}

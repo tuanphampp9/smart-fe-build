@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { NotificationType } from '@/lib/types/notificationType'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface NotiState {
   notification: {
@@ -7,11 +8,15 @@ interface NotiState {
     type: string
   }[]
   stompClient: any
+  listNotifications: NotificationType[]
+  numberUnread: number
 }
 
 const initialState: NotiState = {
   notification: [],
   stompClient: null,
+  listNotifications: [],
+  numberUnread: 0,
 }
 
 const notiSlice = createSlice({
@@ -32,6 +37,21 @@ const notiSlice = createSlice({
     removeStompClient: (state) => {
       state.stompClient = null
     },
+    setListNotifications: (
+      state,
+      action: PayloadAction<NotificationType[]>
+    ) => {
+      state.listNotifications = action.payload
+    },
+    setNumberUnread: (state, action: PayloadAction<number>) => {
+      state.numberUnread = action.payload
+    },
+    upperNumberUnread: (state) => {
+      state.numberUnread += 1
+    },
+    lowerNumberUnread: (state) => {
+      state.numberUnread -= 1
+    },
   },
 })
 
@@ -40,6 +60,10 @@ export const {
   removeNotification,
   setStompClient,
   removeStompClient,
+  setListNotifications,
+  setNumberUnread,
+  upperNumberUnread,
+  lowerNumberUnread,
 } = notiSlice.actions
 
 export default notiSlice.reducer

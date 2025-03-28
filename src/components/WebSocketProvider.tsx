@@ -2,9 +2,16 @@
 
 import { useEffect, createContext, useRef, useContext, useState } from 'react'
 import { Client } from '@stomp/stompjs'
-import { useDispatch } from 'react-redux'
-import { addNotification, setStompClient } from '@/store/slices/notiSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  addNotification,
+  setListNotifications,
+  setNumberUnread,
+  setStompClient,
+  upperNumberUnread,
+} from '@/store/slices/notiSlice'
 import { jwtDecode } from 'jwt-decode'
+import { RootState } from '@/store/store'
 const WebSocketContext = createContext<Client | null>(null)
 export const WebSocketProvider = ({
   children,
@@ -32,8 +39,10 @@ export const WebSocketProvider = ({
         setStompClient(stompClient)
         stompClient.subscribe('/topic/notifications', (message) => {
           console.log('Received message:', message.body)
-          const data = JSON.parse(message.body)
+          const data: any = JSON.parse(message.body)
           dispatch(addNotification(data)) // Lưu thông báo vào Redux
+          //update number unread
+          dispatch(upperNumberUnread())
         })
       },
       onStompError: (frame) => {

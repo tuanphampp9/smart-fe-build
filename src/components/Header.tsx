@@ -23,6 +23,7 @@ import {
 import { deleteCart, updateQuantity } from '@/store/slices/userSlice'
 import LoadingButton from '@mui/lab/LoadingButton'
 import { createBorrowSlipForClient } from '@/apiRequest/borrowSlipApi'
+import ListNotifications from './ListNotifications'
 
 export interface IHeaderProps {}
 
@@ -207,17 +208,33 @@ export default function Header(props: IHeaderProps) {
       <div className='flex justify-center bg-[#E7E9EF] py-2'>
         <div className='container flex justify-between'>
           {user.fullName ? (
-            <div className='flex gap-1 items-center'>
-              <span className='text-black'>Xin chào</span>
-              <span className='text-blue-600'>{user.fullName}, </span>
-              <Link
-                href='/login'
-                className='text-blue-600'
-                onClick={handleLogout}
-              >
-                Đăng xuất
-              </Link>
-            </div>
+            <>
+              <div className='flex gap-1 items-center'>
+                <span className='text-black'>Xin chào</span>
+                <span className='text-blue-600'>{user.fullName}, </span>
+                <Link
+                  href='/login'
+                  className='text-blue-600'
+                  onClick={handleLogout}
+                >
+                  Đăng xuất
+                </Link>
+              </div>
+              <div className='flex items-center gap-3'>
+                <div
+                  className='relative cursor-pointer'
+                  onClick={() => setOpenModalCart(true)}
+                >
+                  <span className='text-black mr-7'>Giỏ ấn phẩm </span>
+                  <div className='absolute top-0 right-0 w-6 h-6 flex justify-center items-center bg-red-600 rounded-full text-white text-xs'>
+                    {user.cartUsers !== null ? user.cartUsers?.length : 0}
+                  </div>
+                </div>
+                <div>
+                  <ListNotifications />
+                </div>
+              </div>
+            </>
           ) : (
             <div className='flex gap-1 items-center text-black'>
               <Link href='/login'>Đăng nhập</Link>
@@ -227,15 +244,6 @@ export default function Header(props: IHeaderProps) {
               <Link href='/register'>Đăng ký</Link>
             </div>
           )}
-          <div
-            className='relative cursor-pointer'
-            onClick={() => setOpenModalCart(true)}
-          >
-            <span className='text-black mr-7'>Giỏ ấn phẩm </span>
-            <div className='absolute top-0 right-0 w-6 h-6 flex justify-center items-center bg-red-600 rounded-full text-white text-xs'>
-              {user.cartUsers !== null ? user.cartUsers?.length : 0}
-            </div>
-          </div>
         </div>
       </div>
       <div className='flex justify-center bg-[#FEF6D3] py-4'>
