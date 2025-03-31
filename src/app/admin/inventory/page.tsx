@@ -253,7 +253,7 @@ export default function Inventory(props: IInventoryProps) {
           startIcon={<AddIcon />}
           variant='contained'
           onClick={() => {
-            router.push('/admin/liquidations/detail')
+            router.push('/admin/inventory/detail')
           }}
         >
           Thêm phiếu kiểm kê

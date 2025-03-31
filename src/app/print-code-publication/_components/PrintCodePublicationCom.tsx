@@ -52,7 +52,7 @@ export default function PrintCodePublicationCom(
               <p>1. Nhãn với bìa trước</p>
               <div className='flex gap-3 flex-wrap'>
                 {item.registrationUniques?.map((registrationUnique, index) => (
-                  <div className='w-[200px] border border-black'>
+                  <div className='w-[250px] border border-black'>
                     <h4 className='text-center border-b border-b-black'>
                       Thư viên điện tử TH
                     </h4>
@@ -66,7 +66,7 @@ export default function PrintCodePublicationCom(
                 ))}
               </div>
               <p>2. Nhãn với bìa sau</p>
-              <div className='w-[200px] border border-black'>
+              <div className='w-[280px] border border-black'>
                 <h4 className='text-center'>ISBN: {item.publication.isbn}</h4>
                 <BarCode
                   value={item.publication.isbn}
