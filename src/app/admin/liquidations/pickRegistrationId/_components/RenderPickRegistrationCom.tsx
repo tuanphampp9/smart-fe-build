@@ -87,18 +87,30 @@ export default function RenderPickRegistrationCom(
     <div>
       <ArrowBackIcon className='cursor-pointer' onClick={() => router.back()} />
       <div className='w-1/2 shadow-md p-4 rounded-md'>
-        <Typography fontWeight={500} className='text-sm !text-red-800'>
-          Thông tin chung phiếu thanh lý: {liquidation?.id}
-        </Typography>
-        <Typography fontWeight={500} className='text-sm'>
-          Người nhận: {liquidation?.receiverName}
-        </Typography>
-        <Typography fontWeight={500} className='text-sm'>
-          Liên hệ: {liquidation?.receiverContact}
-        </Typography>
-        <Typography fontWeight={500} className='text-sm'>
-          Ghi chú: {liquidation?.note}
-        </Typography>
+        <div>
+          <Typography fontWeight={500} className='text-sm !text-red-800'>
+            Thông tin chung phiếu thanh lý: {liquidation?.id}
+          </Typography>
+          <Typography fontWeight={500} className='text-sm'>
+            Người nhận: {liquidation?.receiverName}
+          </Typography>
+          <Typography fontWeight={500} className='text-sm'>
+            Liên hệ: {liquidation?.receiverContact}
+          </Typography>
+          <Typography fontWeight={500} className='text-sm'>
+            Ghi chú: {liquidation?.note}
+          </Typography>
+        </div>
+        <div className='mt-5 flex justify-end'>
+          <Button
+            variant='contained'
+            color='info'
+            onClick={handleUpdateLiquidation}
+            disabled={liquidation.status === 'DONE'}
+          >
+            Đã thanh lý
+          </Button>
+        </div>
       </div>
       <Formik
         initialValues={{
@@ -321,16 +333,6 @@ export default function RenderPickRegistrationCom(
           </>
         )}
       </Formik>
-      <div className='mt-5 flex justify-end'>
-        <Button
-          variant='contained'
-          color='info'
-          onClick={handleUpdateLiquidation}
-          disabled={liquidation.status === 'DONE'}
-        >
-          Đã thanh lý
-        </Button>
-      </div>
     </div>
   )
 }

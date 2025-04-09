@@ -166,6 +166,9 @@ export default function LiquidationPage(props: ILiquidationPageProps) {
       headerName: 'Sửa',
       headerAlign: 'left',
       renderCell: (params) => {
+        if (params.row.status === 'DONE') {
+          return
+        }
         return (
           <IconButton
             onClick={() => {

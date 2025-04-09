@@ -190,18 +190,20 @@ export default function RenderDetailInventory(
           </Typography>
         </Button>
       </Box>
-      <div className='flex justify-end mt-5'>
-        <Tooltip title='Đi đến chi tiết phiếu kiểm kê'>
-          <ArrowForwardIcon
-            className='cursor-pointer'
-            onClick={() =>
-              router.push(
-                `/admin/inventory/pickRegistrationId?inventoryId=${inventoryId}`
-              )
-            }
-          />
-        </Tooltip>
-      </div>
+      {inventoryId && (
+        <div className='flex justify-end mt-5'>
+          <Tooltip title='Đi đến chi tiết phiếu kiểm kê'>
+            <ArrowForwardIcon
+              className='cursor-pointer'
+              onClick={() =>
+                router.push(
+                  `/admin/inventory/pickRegistrationId?inventoryId=${inventoryId}`
+                )
+              }
+            />
+          </Tooltip>
+        </div>
+      )}
     </div>
   )
 }

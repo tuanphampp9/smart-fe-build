@@ -188,18 +188,20 @@ export default function RenderDetailLiquidation(
           </Typography>
         </Button>
       </Box>
-      <div className='flex justify-end mt-5'>
-        <Tooltip title='Đi đến chi tiết phiếu thanh lý'>
-          <ArrowForwardIcon
-            className='cursor-pointer'
-            onClick={() =>
-              router.push(
-                `/admin/liquidations/pickRegistrationId?liquidationId=${liquidationId}`
-              )
-            }
-          />
-        </Tooltip>
-      </div>
+      {liquidationId && (
+        <div className='flex justify-end mt-5'>
+          <Tooltip title='Đi đến chi tiết phiếu thanh lý'>
+            <ArrowForwardIcon
+              className='cursor-pointer'
+              onClick={() =>
+                router.push(
+                  `/admin/liquidations/pickRegistrationId?liquidationId=${liquidationId}`
+                )
+              }
+            />
+          </Tooltip>
+        </div>
+      )}
     </div>
   )
 }

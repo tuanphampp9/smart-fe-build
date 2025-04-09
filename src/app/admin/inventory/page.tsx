@@ -170,6 +170,9 @@ export default function Inventory(props: IInventoryProps) {
       headerName: 'Sửa',
       headerAlign: 'left',
       renderCell: (params) => {
+        if (params.row.status === 'FINISHED') {
+          return
+        }
         return (
           <IconButton
             onClick={() => {
