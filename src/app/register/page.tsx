@@ -9,6 +9,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 import LoadingButton from '@mui/lab/LoadingButton'
 import {
   Box,
+  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -64,7 +65,9 @@ export default function Register(props: IRegisterProps) {
         const response = await register(values)
         if (response.status === 201) {
           toast.success('Đăng ký thành công')
-          router.push('/login')
+          router.push('/register/user-interest')
+          //set userId into localstorage
+          localStorage.setItem('userId', response.data.data.id)
         }
         console.log(response)
       } catch (error: any) {
@@ -95,11 +98,28 @@ export default function Register(props: IRegisterProps) {
       }
     }
   }
+  const handleFillData = () => {
+    formik.setValues({
+      fullName: 'test2',
+      email: 'tuantest18@gmail.com',
+      portraitImg:
+        'http://res.cloudinary.com/dph5psbpr/image/upload/v1745000460/IdentityCards/mfjw0pnjouuxjd99lbs0.jpg',
+      dob: '12/12/2000',
+      phone: '0123456789',
+      identityCardNumber: '123456789',
+      address: '123 Đường ABC, Phường XYZ, Quận 1',
+      gender: 'MALE',
+    })
+    setCardID({
+      url: 'http://res.cloudinary.com/dph5psbpr/image/upload/v1745000460/IdentityCards/mfjw0pnjouuxjd99lbs0.jpg',
+      loading: false,
+    })
+  }
   return (
     <Box className='w-screen h-screen flex justify-center items-center'>
       <Image src='/assets/book_bg.jpg' layout='fill' alt='background book' />
       <Box className='relative rounded-sm overflow-hidden'>
-        <Box className='border-b-4 border-red-800'>
+        <Box className='border-b-4 border-red-800 flex justify-between items-center'>
           <Typography
             variant='h5'
             fontWeight={500}
@@ -107,6 +127,7 @@ export default function Register(props: IRegisterProps) {
           >
             Thông tin đăng ký thẻ đọc
           </Typography>
+          <Button onClick={handleFillData}>Fill</Button>
         </Box>
         <Box className='w-[900px] rounded-sm shadow-2xl p-4'>
           <Box component='form' onSubmit={formik.handleSubmit} sx={{ mt: 1 }}>

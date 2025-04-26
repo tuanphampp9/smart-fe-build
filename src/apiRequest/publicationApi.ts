@@ -62,9 +62,12 @@ export const getListRegistrationUniques = async (
   return response
 }
 
-export const getListPublicationSuggestions = async (publicationId: string) => {
+export const getListPublicationSuggestions = async (
+  publicationId: string,
+  userId: string
+) => {
   const response = await instant.get(
-    `${API_DOMAIN}/v1/publications/suggestions/${publicationId}`
+    `${API_DOMAIN}/v1/publications/suggestions-books/${publicationId}/user/${userId}`
   )
   return response
 }

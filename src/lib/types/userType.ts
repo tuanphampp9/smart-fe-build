@@ -11,6 +11,7 @@ export interface UserType {
   gender: string
   cardRead?: any
   cartUsers?: CartUserType[]
+  interests?: string
 }
 export interface CartUserType {
   id: string

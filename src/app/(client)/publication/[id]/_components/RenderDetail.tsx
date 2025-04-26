@@ -46,7 +46,10 @@ export default function RenderDetail(props: IRenderDetailProps) {
   }
   const fetchListSuggestions = async () => {
     try {
-      const res = await getListPublicationSuggestions(publicationId)
+      const res = await getListPublicationSuggestions(
+        publicationId,
+        user.id ?? ''
+      )
       console.log(res)
       setListSuggestions(res.data)
     } catch (error: any) {
@@ -54,10 +57,10 @@ export default function RenderDetail(props: IRenderDetailProps) {
     }
   }
   React.useEffect(() => {
-    if (publicationId) {
+    if (publicationId && user.id) {
       fetchPublication()
     }
-  }, [publicationId])
+  }, [publicationId, user.id])
   const listTabs = [
     {
       label: 'Thông tin cơ bản',

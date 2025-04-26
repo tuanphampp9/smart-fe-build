@@ -95,3 +95,12 @@ export const renewCard = async (cardId: string) => {
   )
   return response
 }
+
+//api add user interest
+export const addUserInterest = async (data: {
+  userId: string
+  interests: string
+}) => {
+  const response = await instant.post(`${API_DOMAIN}/v1/users/interests`, data)
+  return response
+}

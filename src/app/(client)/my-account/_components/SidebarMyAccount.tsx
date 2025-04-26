@@ -31,6 +31,11 @@ const menus = [
   },
   {
     id: 5,
+    label: 'Sở thích',
+    href: '/my-account/user-interest',
+  },
+  {
+    id: 6,
     label: 'Đổi mật khẩu',
     href: '/my-account/change-password',
   },
